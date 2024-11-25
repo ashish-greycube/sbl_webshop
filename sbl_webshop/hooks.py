@@ -106,6 +106,9 @@ app_license = "mit"
 
 # before_app_uninstall = "sbl_webshop.utils.before_app_uninstall"
 # after_app_uninstall = "sbl_webshop.utils.after_app_uninstall"
+update_website_context = [
+    "sbl_webshop.overrides.update_website_context",
+]
 
 # Desk Notifications
 # ------------------
@@ -137,13 +140,13 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+    "Quotation": {
+        "validate": [
+            "sbl_webshop.overrides.set_lead_time_in_quotation",
+        ],
+    },
+}
 
 # Scheduled Tasks
 # ---------------
@@ -242,3 +245,12 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+
+signup_form_template = "sbl_webshop.login.show_custom_signup"
+
+jinja = {
+    "methods": [
+        "sbl_webshop.overrides.get_out_of_stock_item_lead_time",
+        "sbl_webshop.overrides.get_in_stock_item_lead_time"
+        ]
+}

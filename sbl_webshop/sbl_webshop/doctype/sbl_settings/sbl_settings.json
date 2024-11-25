@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-18 14:26:51.595744",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "sign_up_with_mobile",
+  "section_break_bnxy",
+  "default_lead_time_for_in_stock_items",
+  "default_lead_time_for_out_of_stock_items"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "sign_up_with_mobile",
+   "fieldtype": "Check",
+   "label": "Sign Up With Mobile"
+  },
+  {
+   "fieldname": "section_break_bnxy",
+   "fieldtype": "Section Break"
+  },
+  {
+   "description": "in days",
+   "fieldname": "default_lead_time_for_in_stock_items",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Default Lead Time for In Stock Items",
+   "reqd": 1
+  },
+  {
+   "description": "in days",
+   "fieldname": "default_lead_time_for_out_of_stock_items",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Default Lead Time for Out of Stock Items",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-11-19 11:13:45.460819",
+ "modified_by": "Administrator",
+ "module": "Sbl Webshop",
+ "name": "Sbl Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
