@@ -13,10 +13,12 @@
         </div>
 
         {% if sign_up_with_mobile %}
-        <div class="form-group">
-            <label class="form-label sr-only" for="signup_mobile_no"> {{ _("Mobile No") }} </label>
-			<input type="tel" id="mobile_no" class="form-control" placeholder="{{ _('Mobile Number') }}" required>
-        </div>
+        <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text" style="padding: 0%;height: 28px;font-family: var(--font-stack); font-size: var(--text-base);">+966</div>
+            </div>
+            <input type="tel" id="mobile_no" class="form-control" placeholder="{{ _('Mobile Number with 9 digits.') }}" required>
+          </div>        
         {% endif %}
     </div>
     <div class="page-card-actions">
@@ -47,8 +49,9 @@
             login.set_status('{{ _("Valid email and name and mobile no are required") }}', 'red');
             return false;
         }
-
-        frappe.call({
+        const check_mobile_no=numberValidate()
+        if (check_mobile_no) {
+            frappe.call({
             method: "sbl_webshop.overrides.user_sign_up",
             args: {
                 "email": email,
@@ -58,6 +61,23 @@
             },
             statusCode: login.login_handlers
         })
+        return false;       
+        }
+
+    }
+    function numberValidate(){
+    var input = document.getElementById('mobile_no');
+
+    var number = parseFloat(input.value);
+    var charactersLength = input.value.length;
+    var numberLength = (""+number).length;
+    if(isNaN(number) || charactersLength !=9 || numberLength !=9 )
+    {
+        alert(  "Enter a valid 9 digit number without zero");
         return false;
     }
+    else {
+            return true
+       }
+};    
 </script>

@@ -22,7 +22,7 @@ $.extend(shopping_cart, {
 		shopping_cart.bind_web_customer_remark();
 	},
 	bind_web_customer_remark: function(){
-		console.log(22222);
+		console.log(2332222);
 		$('.web_customer_remark').on('change', 'textarea', function() {
 			const $textarea = $(this);
 			const web_customer_remark = $textarea.val();
@@ -35,7 +35,10 @@ $.extend(shopping_cart, {
 					web_customer_remark: web_customer_remark
 				},
 				callback: function(r) {
+					console.log(r,'r')
+					
 					if (r && r.message){
+						location.reload();
 						console.log(r,'r')
 					}
 				}
@@ -193,11 +196,13 @@ $.extend(shopping_cart, {
 	},
 
 	place_quotation_for_review: function(btn) {
+		console.log(btn,'btn')
 		shopping_cart.freeze();		
 		const $btn = $(".btn-place-quotation-for-review");
 		console.log($btn,'22')
 		const doc_name = $btn.attr('data-doc-name');
-		const workflow_action= $btn.attr('data-workflow-action');
+		// const workflow_action= $btn.attr('data-workflow-action');
+		const workflow_action=btn.getAttribute('data-workflow-action')
 		console.log('doc_name',doc_name)
 		return frappe.call({
 			type: "POST",
@@ -221,15 +226,26 @@ $.extend(shopping_cart, {
 				} else {
 					$(btn).hide();
 					frappe.msgprint({
-						title: __('Success'),
+						title: __('Done'),
 						indicator: 'green',
 						message: __(r.message)
-					});	
-					let so=r.message
-					console.log(so)	
-					if (so.startsWith('SO-')) {
-						window.location.href = '/orders/' + encodeURIComponent(r.message);						
-					}			
+					})
+					
+					setTimeout(() => {
+						if (workflow_action=='Submit For Review' || workflow_action=='Counter Offer') {
+							location.reload()
+							}
+	
+							if (workflow_action=='Reject' ) {
+								window.location.href = '/all-products';
+							}	
+							let so=r.message
+							if (so.startsWith('SO-') && workflow_action=='Accept') {
+								window.location.href = '/orders/' + encodeURIComponent(r.message);						
+							}						
+					}, 1200);
+								
+					
 				}
 			}
 		});

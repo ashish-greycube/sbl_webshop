@@ -106,9 +106,9 @@ app_license = "mit"
 
 # before_app_uninstall = "sbl_webshop.utils.before_app_uninstall"
 # after_app_uninstall = "sbl_webshop.utils.after_app_uninstall"
-update_website_context = [
-    "sbl_webshop.overrides.update_website_context",
-]
+# update_website_context = [
+#     "sbl_webshop.overrides.update_website_context",
+# ]
 
 # Desk Notifications
 # ------------------

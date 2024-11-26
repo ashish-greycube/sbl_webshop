@@ -46,6 +46,31 @@
 			{% endif %} -->
 
 			<table class="table w-100 grand-total mt-6">
+				{% set tot_quotation_discount = [] %}
+				{%- for item in doc.items -%}
+					{% if tot_quotation_discount.append((((item.price_list_rate * item.qty)
+						* item.discount_percentage) / 100)) %}
+					{% endif %}
+				{% endfor %}
+				{% set sum_of_tot_quotation_discount = tot_quotation_discount | sum %}
+				{% if sum_of_tot_quotation_discount>0 %}
+				<tr>
+					<td class="bill-content net-total">{{ _("Applied Coupon Code") }}</td>
+					<td class="bill-content net-total text-right">						
+						{%- for row in frappe.get_all(doctype="Coupon Code",
+						fields=["coupon_code"], filters={ "name":doc.coupon_code}) -%}
+							<span>{{ row.coupon_code }}</span>
+						{% endfor %}
+					</td>
+				</tr>				
+				<tr>
+					<td class="bill-content net-total">{{ _("Savings") }}</td>
+					<td class="bill-content net-total text-right">						
+						{{ frappe.utils.fmt_money((tot_quotation_discount | sum),currency=doc.currency) }}
+					</td>
+				</tr>				
+				{% endif %}
+						
 				<tr>
 					<td class="bill-content net-total">{{ _("Grand Total") }}</td>
 					<td class="bill-content net-total text-right">{{ doc.get_formatted("grand_total") }}</td>
@@ -57,10 +82,10 @@
 		<hr>
 		{% if doc.workflow_state == 'Draft' %}
 		<button class="btn btn-primary btn-place-quotation-for-review font-md w-100" data-doc-name={{doc.name}} data-workflow-action="Submit For Review" type="button">
-			{{ _('Place For Review') }}
+			{{ _('Request For Quotatoin') }}
 		</button>	
 		{% elif doc.workflow_state =='For Sales Review' %}
-		<button class="btn btn-primary font-md w-100" data-doc-name={{doc.name}} data-workflow-action="Submit For Review" type="button">
+		<button class="btn btn-primary font-md w-100" data-doc-name={{doc.name}} data-workflow-action="No Action" type="button">
 			{{ _('It is under review. No Action is required.') }}
 		</button>			
 		{% elif doc.workflow_state =='Waiting For Client Review' %}

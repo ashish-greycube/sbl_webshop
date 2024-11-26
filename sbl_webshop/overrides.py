@@ -1,12 +1,15 @@
 import frappe
 from frappe import _, throw
 from frappe.website.utils import is_signup_disabled
-from frappe.utils import cint, escape_html, random_string
+from frappe.utils import cint, escape_html, random_string,cstr
 import requests
 from webshop.webshop.utils.product import get_web_item_qty_in_stock
 from frappe.model.workflow import set_workflow_state_on_action,apply_workflow
 from erpnext.selling.doctype.quotation.quotation import _make_sales_order
 from webshop.webshop.shopping_cart.cart import _get_cart_quotation
+from frappe.contacts.doctype.contact.contact import get_contact_name
+from frappe.core.doctype.user.user import create_contact
+from erpnext.portal.utils import create_party_contact
 
 @frappe.whitelist(allow_guest=True)
 def user_sign_up(email: str, full_name: str, mobile_no:str,redirect_to: str) -> tuple[int, str]:
@@ -36,7 +39,7 @@ def user_sign_up(email: str, full_name: str, mobile_no:str,redirect_to: str) -> 
 			"doctype": "User",
 			"email": email,
 			"first_name": escape_html(full_name),
-			"mobile_no": mobile_no,
+			"mobile_no": '+966'+mobile_no,
 			"enabled": 1,
 			"new_password": random_string(10),
 			"user_type": "Website User",
@@ -56,6 +59,24 @@ def user_sign_up(email: str, full_name: str, mobile_no:str,redirect_to: str) -> 
 	if redirect_to:
 		frappe.cache.hset("redirect_after_login", user.name, redirect_to)
 
+	#  create customer and contact
+	party_type="Customer"
+	party = frappe.new_doc(party_type)
+	fullname = frappe.utils.get_fullname(user)
+	party.update(
+			{
+				"customer_name": fullname,
+				"customer_type": "Individual",
+			}
+		)		
+	party.flags.ignore_mandatory = True
+	party.insert(ignore_permissions=True)	
+	contact = frappe.new_doc("Contact")
+	contact.update({"first_name": fullname, "email_id": user})
+	contact.append("links", dict(link_doctype=party_type, link_name=party.name))
+	contact.append("email_ids", dict(email_id=cstr(email), is_primary=True))
+	contact.flags.ignore_mandatory = True
+	contact.insert(ignore_permissions=True)	
 
 	if user.flags.email_sent:
 		return 1, _("Please check your email for verification")
@@ -92,27 +113,27 @@ def update_website_context(context):
 		context["default_lead_time_for_out_of_stock_items"] = default_lead_time_for_out_of_stock_items
 
 def get_out_of_stock_item_lead_time(item_code):
-	custom_lead_time_for_out_of_stock_item = frappe.db.get_value("Item", item_code, "custom_lead_time_for_out_of_stock_item")
+	item_level_lead_time_for_out_of_stock_item = frappe.db.get_value("Item", item_code, "custom_lead_time_for_out_of_stock_item")
 	default_lead_time_for_out_of_stock_items = frappe.db.get_value("Sbl Settings", None, "default_lead_time_for_out_of_stock_items")	
-	if custom_lead_time_for_out_of_stock_item:
-		return custom_lead_time_for_out_of_stock_item
+	if item_level_lead_time_for_out_of_stock_item:
+		return item_level_lead_time_for_out_of_stock_item
 	else:
 		return default_lead_time_for_out_of_stock_items
 
 def get_in_stock_item_lead_time(item_code):
-	custom_lead_time_for_in_stock_item = frappe.db.get_value("Item", item_code, "custom_lead_time_for_in_stock_item")
+	item_level_lead_time_for_in_stock_item = frappe.db.get_value("Item", item_code, "custom_lead_time_for_in_stock_item")
 	default_lead_time_for_in_stock_items = frappe.db.get_value("Sbl Settings", None, "default_lead_time_for_in_stock_items")
-	if custom_lead_time_for_in_stock_item:
-		return custom_lead_time_for_in_stock_item
+	if item_level_lead_time_for_in_stock_item:
+		return item_level_lead_time_for_in_stock_item
 	else:
 		return default_lead_time_for_in_stock_items
 	
 def set_lead_time_in_quotation(self,method)	:
-	custom_maximum_lead_time=0
+	quotation_level_maximum_lead_time=0
 	for item in self.items:
 		website_warehouse = frappe.db.get_value("Website Item", {"item_code": item.item_code}, "website_warehouse")
 		is_stock_item = frappe.db.get_value("Item", item.item_code, "is_stock_item")
-		if is_stock_item:
+		if is_stock_item==1:
 			item_stock = get_web_item_qty_in_stock(item.item_code, website_warehouse,"website_warehouse")
 			if not cint(item_stock.in_stock):
 				item.custom_lead_time=get_out_of_stock_item_lead_time(item.item_code)
@@ -120,9 +141,9 @@ def set_lead_time_in_quotation(self,method)	:
 				item.custom_lead_time=get_out_of_stock_item_lead_time(item.item_code)
 			else:
 				item.custom_lead_time=get_in_stock_item_lead_time(item.item_code)
-			if cint(item.custom_lead_time)>custom_maximum_lead_time:
-				custom_maximum_lead_time=item.custom_lead_time
-	self.custom_maximum_lead_time=custom_maximum_lead_time
+			if cint(item.custom_lead_time)>quotation_level_maximum_lead_time:
+				quotation_level_maximum_lead_time=item.custom_lead_time
+	self.custom_maximum_lead_time=quotation_level_maximum_lead_time
 
 
 @frappe.whitelist()		
@@ -130,7 +151,7 @@ def update_web_customer_remark(doc_name,web_customer_remark):
 	quot=frappe.get_doc('Quotation', doc_name)
 	quot.custom_web_customer_remark=web_customer_remark
 	quot.save(ignore_permissions=True)
-	return
+	return True
 
 
 @frappe.whitelist()
@@ -139,6 +160,7 @@ def place_quotation_for_review(doc_name,workflow_action):
 	next_workflow_state= workflow_action
 	quot=frappe.get_doc('Quotation', doc_name)
 	workflow_name= quot.meta.get_workflow()
+	print('next_workflow_state',next_workflow_state)
 	if ((quot.status == "Draft" and quot.workflow_state != next_workflow_state)):
 		apply_workflow(quot,next_workflow_state)
 		if next_workflow_state!='Accept':
