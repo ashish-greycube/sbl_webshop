@@ -15,11 +15,37 @@ $.extend(shopping_cart, {
 		shopping_cart.bind_place_order();
 		shopping_cart.bind_place_quotation_for_review();
 		shopping_cart.bind_request_quotation();
+		shopping_cart.bind_counter_offer_dialog();
 		shopping_cart.bind_change_qty();
 		shopping_cart.bind_remove_cart_item();
 		shopping_cart.bind_change_notes();
 		shopping_cart.bind_coupon_code();
 		shopping_cart.bind_web_customer_remark();
+		shopping_cart.bind_web_customer_preferred_delivery_date();
+	},
+	bind_web_customer_preferred_delivery_date: function(){
+		$('.web_customer_preferred_delivery_date').on('input', function() {
+			const $input = $(this);
+			const web_customer_preferred_delivery_date = $input.val();
+			const doc_name = $input.attr('data-doc-name');
+			console.log('web_customer_preferred_delivery_date',web_customer_preferred_delivery_date)
+			return frappe.call({
+				type: "POST",
+				method: "sbl_webshop.overrides.update_web_customer_preferred_delivery_date",
+				args : {
+					doc_name : doc_name,
+					web_customer_preferred_delivery_date: web_customer_preferred_delivery_date
+				},
+				callback: function(r) {
+					console.log(r,'r')
+					
+					if (r && r.message){
+						location.reload();
+						console.log(r,'r')
+					}
+				}
+			});			
+		});		
 	},
 	bind_web_customer_remark: function(){
 		console.log(2332222);
@@ -44,6 +70,44 @@ $.extend(shopping_cart, {
 				}
 			});			
 		});
+	},
+	bind_counter_offer_dialog: function() {
+		$(".btn-counter-offer-dialog").on("click", function() {
+			d=frappe.prompt([
+				{
+					label: 'Your input',
+					fieldname: 'counter_offer_remark',
+					fieldtype: 'Small Text',
+					reqd: 1,
+				}
+			], (values) => {
+				console.log(values.counter_offer_remark);
+				frappe.run_serially([
+					() => {
+						return frappe.call({
+							type: "POST",
+							method: "sbl_webshop.overrides.update_web_customer_remark",
+							args : {
+								doc_name : $('.quotation-name').text(),
+								web_customer_remark: values.counter_offer_remark
+							},
+							callback: function(r) {
+								console.log(r,'r')
+								
+								if (r && r.message){
+									// location.reload();
+									console.log(r,'1r')
+								}
+							}
+						});
+					},
+					()=>{
+						$('button[data-workflow-action="Counter Offer"]').trigger("click");
+					}
+				]);				
+			}, 'Counter Offer Remark', 'Submit')
+			d.get_close_btn().hide();
+		});		
 	},
 	bind_place_quotation_for_review: function() {
 		$(".btn-place-quotation-for-review").on("click", function() {
@@ -307,6 +371,7 @@ frappe.ready(function() {
 	}
 	shopping_cart.parent = $(".cart-container");
 	shopping_cart.bind_events();
+	$("input.web_customer_preferred_delivery_date").attr("min",moment().format('YYYY-MM-DD'))
 });
 
 function show_terms() {

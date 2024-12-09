@@ -139,6 +139,9 @@ app_license = "mit"
 # Document Events
 # ---------------
 # Hook on document methods and events
+override_doctype_class = {
+    "Payment Request": "sbl_webshop.overrides.PaymentRequest",
+}
 
 doc_events = {
     "Quotation": {

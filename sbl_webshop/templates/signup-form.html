@@ -17,7 +17,7 @@
             <div class="input-group-prepend">
               <div class="input-group-text" style="padding: 0%;height: 28px;font-family: var(--font-stack); font-size: var(--text-base);">+966</div>
             </div>
-            <input type="tel" id="mobile_no" class="form-control" placeholder="{{ _('Mobile Number with 9 digits.') }}" required>
+            <input type="tel" id="mobile_no" class="form-control" placeholder="{{ _('9 digits mobile no starting with 5') }}" pattern="[5][0-9]{8}" title="Please enter 9 digits mobile no starting with 5" required>
           </div>        
         {% endif %}
     </div>

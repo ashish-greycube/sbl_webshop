@@ -10,6 +10,12 @@ from webshop.webshop.shopping_cart.cart import _get_cart_quotation
 from frappe.contacts.doctype.contact.contact import get_contact_name
 from frappe.core.doctype.user.user import create_contact
 from erpnext.portal.utils import create_party_contact
+from frappe.utils import get_url,getdate
+from erpnext.accounts.doctype.payment_request.payment_request import (
+	PaymentRequest as OriginalPaymentRequest,
+)
+from erpnext.controllers.accounts_controller import get_default_taxes_and_charges
+from erpnext import get_default_company
 
 @frappe.whitelist(allow_guest=True)
 def user_sign_up(email: str, full_name: str, mobile_no:str,redirect_to: str) -> tuple[int, str]:
@@ -131,10 +137,10 @@ def get_in_stock_item_lead_time(item_code):
 def set_lead_time_in_quotation(self,method)	:
 	quotation_level_maximum_lead_time=0
 	for item in self.items:
-		website_warehouse = frappe.db.get_value("Website Item", {"item_code": item.item_code}, "website_warehouse")
+		# website_warehouse = frappe.db.get_value("Website Item", {"item_code": item.item_code}, "website_warehouse")
 		is_stock_item = frappe.db.get_value("Item", item.item_code, "is_stock_item")
 		if is_stock_item==1:
-			item_stock = get_web_item_qty_in_stock(item.item_code, website_warehouse,"website_warehouse")
+			item_stock = get_web_item_qty_in_stock(item.item_code,"website_warehouse")
 			if not cint(item_stock.in_stock):
 				item.custom_lead_time=get_out_of_stock_item_lead_time(item.item_code)
 			if item.qty > item_stock.stock_qty:
@@ -149,10 +155,18 @@ def set_lead_time_in_quotation(self,method)	:
 @frappe.whitelist()		
 def update_web_customer_remark(doc_name,web_customer_remark):
 	quot=frappe.get_doc('Quotation', doc_name)
+	if quot.custom_web_customer_remark:
+		web_customer_remark=web_customer_remark+"\n"+quot.custom_web_customer_remark
 	quot.custom_web_customer_remark=web_customer_remark
 	quot.save(ignore_permissions=True)
 	return True
 
+@frappe.whitelist()	
+def update_web_customer_preferred_delivery_date(doc_name,web_customer_preferred_delivery_date):
+	quot=frappe.get_doc('Quotation', doc_name)
+	quot.custom_customers_preferred_delivery_date=getdate(web_customer_preferred_delivery_date)
+	quot.save(ignore_permissions=True)
+	return True
 
 @frappe.whitelist()
 def place_quotation_for_review(doc_name,workflow_action):
@@ -219,3 +233,85 @@ def place_quotation_for_review(doc_name,workflow_action):
 				frappe.local.cookie_manager.delete_cookie("cart_count")
 
 			return sales_order.name
+		
+
+class PaymentRequest(OriginalPaymentRequest):
+	def make_invoice(self):
+		print('make_invoicemake_invoice set_as_paidset_as_paid as sbl')
+		# frappe.throw('it is sbl')
+		ref_doc = frappe.get_doc(self.reference_doctype, self.reference_name)
+		if hasattr(ref_doc, "order_type") and ref_doc.order_type == "Shopping Cart":
+			from erpnext.selling.doctype.sales_order.sales_order import make_sales_invoice
+
+			si = make_sales_invoice(self.reference_name, ignore_permissions=True)
+			si.allocate_advances_automatically = True
+			taxes = get_default_taxes_and_charges("Sales Taxes and Charges Template", company=self.company)
+			si.taxes_and_charges=taxes.get("taxes_and_charges")
+			si.run_method("set_missing_values")
+			si.run_method("set_advances")
+			si.run_method("calculate_taxes_and_totals")
+			# si.flags.ignore_validate = True
+			si = si.insert(ignore_permissions=True)
+			si.submit()
+
+	def set_as_paid(self):
+		print('set_as_paidset_as_paid as sbl')
+		if self.payment_channel == "Phone":
+			self.db_set({"status": "Paid", "outstanding_amount": 0})
+
+		else:
+			payment_entry = self.create_payment_entry()
+			self.make_invoice()
+
+			return payment_entry
+			
+	def on_payment_authorized(self, status=None):
+		print('on_payment_authorizedon_payment_authorized  set_as_paidset_as_paid as sbl')
+		if not status:
+			return
+
+		if status not in ("Authorized", "Completed"):
+			return
+
+		if not hasattr(frappe.local, "session"):
+			return
+
+		if frappe.local.session.user == "Guest":
+			return
+
+		if self.payment_channel == "Phone":
+			return
+
+		cart_settings = frappe.get_doc("Webshop Settings")
+
+		if not cart_settings.enabled:
+			return
+
+		success_url = cart_settings.payment_success_url
+		redirect_to = get_url("/orders/{0}".format(self.reference_name))
+
+		if success_url:
+			redirect_to = (
+				{
+					"Orders": "/orders",
+					"Invoices": "/invoices",
+					"My Account": "/me",
+				}
+			).get(success_url, "/me")
+
+		self.set_as_paid()
+		msg=_("Your payment to URPay is successful. Thanks")
+		frappe.msgprint(msg)
+		return redirect_to
+
+	@staticmethod
+	def get_gateway_details(args):
+		print('get_gateway_details  get_gateway_details set_as_paidset_as_paid as sbl')
+		if args.order_type != "Shopping Cart":
+			return super().get_gateway_details(args)
+
+		cart_settings = frappe.get_doc("Webshop Settings")
+		gateway_account = cart_settings.payment_gateway_account
+		return super().get_payment_gateway_account(gateway_account)		
+	
+	

@@ -39,7 +39,6 @@
 				<p>
 					{% if doc.doctype != "Sales Invoice" or doc.outstanding_amount > 0 %}
 					{% set mode_of_payment = frappe.db.get_value('Mode of Payment', 'Urpay', 'name') or ''%}
-					{{mode_of_payment}}
 					<a href="/api/method/erpnext.accounts.doctype.payment_request.payment_request.make_payment_request?dn={{ doc.name }}&dt={{ doc.doctype }}&submit_doc=1&order_type=Shopping Cart&mode_of_payment={{mode_of_payment}}"
 						class="btn btn-primary btn-sm" id="pay-for-order">
 						{{ _("Pay") }} {{doc.get_formatted("grand_total") }}

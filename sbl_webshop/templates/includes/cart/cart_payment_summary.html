@@ -86,7 +86,7 @@
 		</button>	
 		{% elif doc.workflow_state =='For Sales Review' %}
 		<button class="btn btn-primary font-md w-100" data-doc-name={{doc.name}} data-workflow-action="No Action" type="button">
-			{{ _('It is under review. No Action is required.') }}
+			{{ _('Under review. No action is required.') }}
 		</button>			
 		{% elif doc.workflow_state =='Waiting For Client Review' %}
 		<button class="btn btn-primary btn-place-quotation-for-review font-md w-40" data-doc-name={{doc.name}}  data-workflow-action="Accept" type="button">
@@ -95,7 +95,8 @@
 		<button class="btn btn-primary btn-place-quotation-for-review font-md w-40" data-doc-name={{doc.name}} data-workflow-action="Reject" type="button">
 			{{ _('Reject') }}
 		</button>
-		<button class="btn btn-primary btn-place-quotation-for-review font-md w-40" data-doc-name={{doc.name}} data-workflow-action="Counter Offer" type="button">
+		<button  class="btn btn-primary btn-counter-offer-dialog font-md w-40" type="button">{{ _('Counter Offer') }}</button>
+		<button class="btn btn-primary btn-place-quotation-for-review font-md w-40" data-doc-name={{doc.name}} data-workflow-action="Counter Offer" type="button" hidden>
 			{{ _('Counter Offer') }}
 		</button>				
 		{% else %}
