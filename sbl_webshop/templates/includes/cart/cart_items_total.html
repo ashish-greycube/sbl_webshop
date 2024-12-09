@@ -21,6 +21,6 @@
 {% endif %}
 <tr>
 	<th  class="web_customer_remark text-left" colspan="3">
-		<b>{{ _("Add Customer Remarks") }} :</b><textarea data-doc-name={{doc.name}} class="form-control" rows="2" placeholder="{{ _('Add Customer Remarks') }}">{{doc.custom_web_customer_remark or ''}}</textarea>
+		<b>{{ _("Add Customer Remarks") }} :</b><textarea  {{ readonly if  doc.workflow_state != 'Draft' else '' }}   data-doc-name={{doc.name}} class="form-control" rows="2" placeholder="{{ _('Add Customer Remarks') }}">{{doc.custom_web_customer_remark or ''}}</textarea>
 	</th>
 </tr>

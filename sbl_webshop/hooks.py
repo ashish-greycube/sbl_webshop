@@ -147,7 +147,9 @@ doc_events = {
     "Quotation": {
         "validate": [
             "sbl_webshop.overrides.set_lead_time_in_quotation",
+            # "sbl_webshop.overrides.set_quotation_taxes_and_charges"
         ],
+        "before_validate":"sbl_webshop.overrides.set_quotation_taxes_and_charges"
     },
 }
 

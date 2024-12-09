@@ -17,6 +17,7 @@ from erpnext.accounts.doctype.payment_request.payment_request import (
 from erpnext.controllers.accounts_controller import get_default_taxes_and_charges
 from erpnext import get_default_company
 
+
 @frappe.whitelist(allow_guest=True)
 def user_sign_up(email: str, full_name: str, mobile_no:str,redirect_to: str) -> tuple[int, str]:
 	print('--'*10)
@@ -133,7 +134,14 @@ def get_in_stock_item_lead_time(item_code):
 		return item_level_lead_time_for_in_stock_item
 	else:
 		return default_lead_time_for_in_stock_items
-	
+
+def set_quotation_taxes_and_charges(self,method)	:
+	if self.order_type == "Shopping Cart":
+		taxes = get_default_taxes_and_charges("Sales Taxes and Charges Template", company=self.company)
+		if taxes.get("taxes"):
+			self.update(taxes)	
+
+
 def set_lead_time_in_quotation(self,method)	:
 	quotation_level_maximum_lead_time=0
 	for item in self.items:
@@ -153,9 +161,9 @@ def set_lead_time_in_quotation(self,method)	:
 
 
 @frappe.whitelist()		
-def update_web_customer_remark(doc_name,web_customer_remark):
+def update_web_customer_remark(doc_name,web_customer_remark,counter=0):
 	quot=frappe.get_doc('Quotation', doc_name)
-	if quot.custom_web_customer_remark:
+	if counter==1:
 		web_customer_remark=web_customer_remark+"\n"+quot.custom_web_customer_remark
 	quot.custom_web_customer_remark=web_customer_remark
 	quot.save(ignore_permissions=True)
@@ -300,8 +308,8 @@ class PaymentRequest(OriginalPaymentRequest):
 			).get(success_url, "/me")
 
 		self.set_as_paid()
-		msg=_("Your payment to URPay is successful. Thanks")
-		frappe.msgprint(msg)
+		msg=_("Your payment to us is successful. Thanks")
+		frappe.msgprint(msg,alert=True, indicator="green")
 		return redirect_to
 
 	@staticmethod
