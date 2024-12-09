@@ -49,7 +49,7 @@ $.extend(shopping_cart, {
 	},
 	bind_web_customer_remark: function(){
 		console.log(2332222);
-		$('.web_customer_remark').on('change', 'textarea', function() {
+		$('.web_customer_remark').on('change','textarea', function() {
 			const $textarea = $(this);
 			const web_customer_remark = $textarea.val();
 			const doc_name = $textarea.attr('data-doc-name');
@@ -113,6 +113,17 @@ $.extend(shopping_cart, {
 	bind_place_quotation_for_review: function() {
 		$(".btn-place-quotation-for-review").on("click", function() {
 			shopping_cart.place_quotation_for_review(this);
+
+			// const doc_workflow_state=$("textarea.web_customer_remark").attr("doc-workflow-state")
+			// console.log(doc_workflow_state)
+			// if (doc_workflow_state=="Draft"){
+			// 	$('button.web_customer_remark').trigger("change", function() {console.log('in ch');shopping_cart.place_quotation_for_review(this)})
+			// }
+			// else{
+			// 	shopping_cart.place_quotation_for_review(this);
+			// }
+			
+			
 		});
 	},
 	bind_place_order: function() {
