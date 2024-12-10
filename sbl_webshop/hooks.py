@@ -30,6 +30,7 @@ app_license = "mit"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/sbl_webshop/css/sbl_webshop.css"
+# web_include_css = "sbl_webshop-web.bundle.css"
 # web_include_js = "/assets/sbl_webshop/js/sbl_webshop.js"
 
 # include custom scss in every website theme (without file extension ".scss")
@@ -106,9 +107,9 @@ app_license = "mit"
 
 # before_app_uninstall = "sbl_webshop.utils.before_app_uninstall"
 # after_app_uninstall = "sbl_webshop.utils.after_app_uninstall"
-# update_website_context = [
-#     "sbl_webshop.overrides.update_website_context",
-# ]
+update_website_context = [
+    "sbl_webshop.overrides.update_website_context",
+]
 
 # Desk Notifications
 # ------------------

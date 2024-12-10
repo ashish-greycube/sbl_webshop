@@ -16,7 +16,7 @@ from erpnext.accounts.doctype.payment_request.payment_request import (
 )
 from erpnext.controllers.accounts_controller import get_default_taxes_and_charges
 from erpnext import get_default_company
-
+from frappe.utils.jinja_globals import is_rtl
 
 @frappe.whitelist(allow_guest=True)
 def user_sign_up(email: str, full_name: str, mobile_no:str,redirect_to: str) -> tuple[int, str]:
@@ -112,12 +112,13 @@ def user_sign_up(email: str, full_name: str, mobile_no:str,redirect_to: str) -> 
 # 	return    
 
 def update_website_context(context):
-	default_lead_time_for_in_stock_items = frappe.db.get_value("Sbl Settings", None, "default_lead_time_for_in_stock_items")
-	default_lead_time_for_out_of_stock_items = frappe.db.get_value("Sbl Settings", None, "default_lead_time_for_out_of_stock_items")
-	if default_lead_time_for_in_stock_items:
-		context["default_lead_time_for_in_stock_items"] = default_lead_time_for_in_stock_items
-	if default_lead_time_for_out_of_stock_items:
-		context["default_lead_time_for_out_of_stock_items"] = default_lead_time_for_out_of_stock_items
+	context['layout_direction']="rtl" if is_rtl() else "ltr"
+	# default_lead_time_for_in_stock_items = frappe.db.get_value("Sbl Settings", None, "default_lead_time_for_in_stock_items")
+	# default_lead_time_for_out_of_stock_items = frappe.db.get_value("Sbl Settings", None, "default_lead_time_for_out_of_stock_items")
+	# if default_lead_time_for_in_stock_items:
+	# 	context["default_lead_time_for_in_stock_items"] = default_lead_time_for_in_stock_items
+	# if default_lead_time_for_out_of_stock_items:
+	# 	context["default_lead_time_for_out_of_stock_items"] = default_lead_time_for_out_of_stock_items
 
 def get_out_of_stock_item_lead_time(item_code):
 	item_level_lead_time_for_out_of_stock_item = frappe.db.get_value("Item", item_code, "custom_lead_time_for_out_of_stock_item")
