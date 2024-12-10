@@ -58,7 +58,8 @@ $.extend(shopping_cart, {
 				method: "sbl_webshop.overrides.update_web_customer_remark",
 				args : {
 					doc_name : doc_name,
-					web_customer_remark: web_customer_remark
+					web_customer_remark: web_customer_remark,
+					counter: "0"
 				},
 				callback: function(r) {
 					console.log(r,'r')
@@ -90,7 +91,7 @@ $.extend(shopping_cart, {
 							args : {
 								doc_name : $('.quotation-name').text(),
 								web_customer_remark: values.counter_offer_remark,
-								counter : 1
+								counter : "1"
 							},
 							callback: function(r) {
 								console.log(r,'r')
