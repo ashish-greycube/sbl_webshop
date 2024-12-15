@@ -111,6 +111,11 @@ def user_sign_up(email: str, full_name: str, mobile_no:str,redirect_to: str) -> 
 # 		pass
 # 	return    
 
+@frappe.whitelist(allow_guest=True)
+def get_translations(language):
+	from frappe.translate import get_all_translations
+	return  get_all_translations(language)
+
 def update_website_context(context):
 	context['layout_direction']="rtl" if is_rtl() else "ltr"
 	# default_lead_time_for_in_stock_items = frappe.db.get_value("Sbl Settings", None, "default_lead_time_for_in_stock_items")

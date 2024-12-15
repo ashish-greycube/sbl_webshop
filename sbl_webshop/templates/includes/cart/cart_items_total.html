@@ -1,6 +1,6 @@
 <!-- Total at the end of the cart items -->
 <tr>
-	<th></th>
+	<th colspan="1"></th>
 	<th class="text-left item-grand-total" colspan="1">
 		{{ _("Total") }}
 	</th>
@@ -10,17 +10,24 @@
 	
 </tr>
 <tr>
-	<th class="text-left item-grand-total totals" colspan="3">{{ _('Maximum lead time is') }} : {{doc.get_formatted("custom_maximum_lead_time")}} {{ _('days') }}</th>
+	<th colspan="1"></th>
+	<th class="text-left" colspan="1"><b>{{ _('Maximum delivery time is') }}</b> </th>
+	<th class="text-left" colspan="3">	
+	<span >{{doc.get_formatted("custom_maximum_lead_time")}} {{ _('days') }}</span>
+	</th>
+
 </tr>
 {% if doc.workflow_state == 'Draft' %}
 <tr>
-	<th class="text-left" colspan="3"><b>{{ _('Preferred Delivery Date') }} :</b> 
+	<th colspan="1"></th>
+	<th class="text-left" colspan="1"><b>{{ _('Preferred delivery date') }}</b></th>
+	<th class="text-left" colspan="3">
 		<input class="web_customer_preferred_delivery_date" data-doc-name={{doc.name}} type="date" value="{{doc.custom_customers_preferred_delivery_date}}"/>
 	</th>
 </tr>
 {% endif %}
 <tr>{{doc.workflow_state}}
 	<th  class="web_customer_remark text-left" colspan="3">
-		<b>{{ _("Add Customer Remarks") }} :</b><textarea {{ 'readonly' if  doc.workflow_state != 'Draft' else '' }}   data-doc-name={{doc.name}}   doc-workflow-state={{doc.workflow_state}} class="form-control web_customer_remark" rows="2" placeholder="{{ _('Add Customer Remarks') }}">{{doc.custom_web_customer_remark or ''}}</textarea>
+		<b>{{ _("Add customer remarks") }}</b><textarea {{ 'readonly' if  doc.workflow_state != 'Draft' else '' }}   data-doc-name={{doc.name}}   doc-workflow-state={{doc.workflow_state}} class="form-control web_customer_remark" rows="2" placeholder="{{ _('Add customer remarks') }}">{{doc.custom_web_customer_remark or ''}}</textarea>
 	</th>
 </tr>

@@ -31,7 +31,7 @@ app_license = "mit"
 # include js, css files in header of web template
 # web_include_css = "/assets/sbl_webshop/css/sbl_webshop.css"
 # web_include_css = "sbl_webshop-web.bundle.css"
-# web_include_js = "/assets/sbl_webshop/js/sbl_webshop.js"
+web_include_js = "sbl_web.bundle.js"
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "sbl_webshop/public/scss/website"

@@ -46,7 +46,7 @@
 				<span class="no-stock out-of-stock">
 					{{ _('Out of stock') }}
 				</span>
-				<br><span class="no-stock out-of-stock">{{ _('Lead time is') }} : {{get_out_of_stock_item_lead_time(item_code)}} {{ _('days') }}</span>				
+				<br><span class="no-stock out-of-stock">{{ _('Delivery time is') }} : {{get_out_of_stock_item_lead_time(item_code)}} {{ _('days') }}</span>				
 			{% elif product_info.in_stock == 1 %}
 				<span class="in-green has-stock">
 					{{ _('In stock') }}
@@ -54,7 +54,7 @@
 						({{ product_info.stock_qty }})
 					{% endif %}
 				</span>
-				<br><span class="in-green has-stock">{{ _('Lead time is') }} : {{get_in_stock_item_lead_time(item_code)}} {{ _('days') }}</span>
+				<br><span class="in-green has-stock">{{ _('Delivery time is') }} : {{get_in_stock_item_lead_time(item_code)}} {{ _('days') }}</span>
 			{% endif %}
 		</div>
 		{% endif %}

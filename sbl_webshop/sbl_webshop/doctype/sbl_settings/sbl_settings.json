@@ -26,7 +26,7 @@
    "fieldname": "default_lead_time_for_in_stock_items",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Default Lead Time for In Stock Items",
+   "label": "Default Delivery Time for In Stock Items",
    "reqd": 1
   },
   {
@@ -34,14 +34,14 @@
    "fieldname": "default_lead_time_for_out_of_stock_items",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Default Lead Time for Out of Stock Items",
+   "label": "Default Delivery Time for Out of Stock Items",
    "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-11-19 11:13:45.460819",
+ "modified": "2024-12-13 15:21:05.456158",
  "modified_by": "Administrator",
  "module": "Sbl Webshop",
  "name": "Sbl Settings",
