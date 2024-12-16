@@ -175,7 +175,7 @@ def set_lead_time_in_quotation(self,method)	:
 def update_web_customer_remark(doc_name,web_customer_remark,counter="0"):
 	print(counter,'cou'*10)
 	quot=frappe.get_doc('Quotation', doc_name)
-	if counter=="1":
+	if counter=="1" and quot.custom_web_customer_remark:
 		web_customer_remark=web_customer_remark+"\n"+quot.custom_web_customer_remark
 	quot.custom_web_customer_remark=web_customer_remark
 	quot.save(ignore_permissions=True)
