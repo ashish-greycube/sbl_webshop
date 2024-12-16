@@ -113,7 +113,15 @@ $.extend(shopping_cart, {
 	},
 	bind_place_quotation_for_review: function() {
 		$(".btn-place-quotation-for-review").on("click", function() {
-			shopping_cart.place_quotation_for_review(this);
+			let billing_adress_count=$('div[data-address-type="billing"]').length
+			let shipping_address_count=$('div[data-address-type="shipping"]').length
+			if (billing_adress_count==1 || shipping_address_count==1) {
+				shopping_cart.place_quotation_for_review(this);
+			}else{
+				frappe.msgprint({title: __('Missing Address'),	indicator: 'orange',	message: __("Please input address")})
+				return;
+			}
+			
 
 			// const doc_workflow_state=$("textarea.web_customer_remark").attr("doc-workflow-state")
 			// console.log(doc_workflow_state)
