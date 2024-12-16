@@ -1,0 +1,30 @@
+{
+ "attach_print": 0,
+ "channel": "Email",
+ "condition": "doc.status==\"To Deliver\"",
+ "creation": "2024-12-05 11:06:16.184368",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Sales Order",
+ "enabled": 1,
+ "event": "Value Change",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "Hello,<br>\n\nThe Sales Order #{{doc.name}} is ready for delivery.<br>\n\nKindly proceed with packing the order.",
+ "message_type": "Markdown",
+ "modified": "2024-12-16 07:50:42.850106",
+ "modified_by": "Administrator",
+ "module": "Sbl Webshop",
+ "name": "Sales Order Submitted",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_role": "Stock Manager"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 0,
+ "subject": "Sales Order {{doc.name}} is submitted.",
+ "value_changed": "status"
+}

@@ -1,0 +1,30 @@
+{
+ "attach_print": 0,
+ "channel": "Email",
+ "condition": "doc.workflow_state==\"For Sales Review\"",
+ "creation": "2024-12-16 07:51:05.549857",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Quotation",
+ "enabled": 1,
+ "event": "Value Change",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "<p>Hello,<br></p>\n\n<p>The Quotationr #{{doc.name}} requires your review.<br></p>\n\nThanks\n",
+ "message_type": "Markdown",
+ "modified": "2024-12-16 07:56:00.812489",
+ "modified_by": "Administrator",
+ "module": "Sbl Webshop",
+ "name": "Sales-Review",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_role": "Sales User"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 0,
+ "subject": "Quotation No. {{doc.name}} requires sales review",
+ "value_changed": "workflow_state"
+}

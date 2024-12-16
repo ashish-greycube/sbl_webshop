@@ -1,0 +1,32 @@
+{
+ "attach_print": 1,
+ "channel": "Email",
+ "condition": "",
+ "creation": "2024-12-09 06:57:08.465167",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Sales Invoice",
+ "enabled": 1,
+ "event": "Submit",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "Hello ,<br>\n\nPlease find the attached invoice for your reference.\n\nThanks\n\n",
+ "message_type": "Markdown",
+ "modified": "2024-12-16 07:49:22.902065",
+ "modified_by": "Administrator",
+ "module": "Sbl Webshop",
+ "name": "Sales Invoice",
+ "owner": "Administrator",
+ "print_format": "SI QR up No Disc New",
+ "recipients": [
+  {
+   "receiver_by_document_field": "contact_email",
+   "receiver_by_role": "Sales User"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 0,
+ "subject": "Sales Invoice {{doc.name}} is submitted.",
+ "value_changed": "status"
+}

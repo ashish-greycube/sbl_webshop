@@ -1,0 +1,30 @@
+{
+ "attach_print": 0,
+ "channel": "Email",
+ "condition": "doc.workflow_state==\"Waiting For Client Review\"",
+ "creation": "2024-11-20 14:58:26.076574",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Quotation",
+ "enabled": 1,
+ "event": "Value Change",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "Hi {{doc.party_name}}\n<br>\nYour quotation number {{doc.name}} is reviewed.\n<br>\nPleave visit {{frappe.get_url()}}/cart?quot_name={{doc.name}}\n<br>\nThanks,\nSBL Team\n",
+ "message_type": "Markdown",
+ "modified": "2024-12-16 07:53:55.688492",
+ "modified_by": "Administrator",
+ "module": "Sbl Webshop",
+ "name": "Reviewed-Notification to Customer",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_document_field": "contact_email"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 0,
+ "subject": "Quotation No. {{doc.name}} is reviewed",
+ "value_changed": "workflow_state"
+}
