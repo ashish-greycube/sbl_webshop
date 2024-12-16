@@ -78,12 +78,17 @@ def user_sign_up(email: str, full_name: str, mobile_no:str,redirect_to: str) -> 
 		)		
 	party.flags.ignore_mandatory = True
 	party.insert(ignore_permissions=True)	
-	contact = frappe.new_doc("Contact")
+	contact_name = frappe.db.get_value("Contact", {"email_id": cstr(email)})
+	if contact_name:
+		contact = frappe.get_doc("Contact", contact_name)
+	else:		
+		contact = frappe.new_doc("Contact")
+	print("======inside sblwebshop contact"*10)
 	contact.update({"first_name": fullname, "email_id": user})
 	contact.append("links", dict(link_doctype=party_type, link_name=party.name))
 	contact.append("email_ids", dict(email_id=cstr(email), is_primary=True))
 	contact.flags.ignore_mandatory = True
-	contact.insert(ignore_permissions=True)	
+	contact.save(ignore_permissions=True)	
 
 	if user.flags.email_sent:
 		return 1, _("Please check your email for verification")
