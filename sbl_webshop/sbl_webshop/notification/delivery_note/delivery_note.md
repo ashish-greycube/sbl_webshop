@@ -1,6 +1,5 @@
-Hello,<br>
+<p>Hello,<br></p>
 
-The Delivery Note: {{doc.name}} has been submitted.<br>
+<p>The Delivery Note: {{doc.name}} has been submitted.<br></p>
 
-Please find the attachment for your reference.
-
+<p>Please find the attachment for your reference.</p>
