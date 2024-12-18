@@ -1,0 +1,36 @@
+<div class="card h-100">
+	<div class="card-body p-0">
+		<br>
+		<hr>
+		{% if doc.workflow_state == 'Draft' %}
+		<button class="btn btn-primary btn-place-quotation-for-review font-md w-100" data-doc-name={{doc.name}} data-workflow-action="Submit For Review" type="button">
+			{{ _('Request For Quotatoin') }}
+		</button>	
+		{% elif doc.workflow_state =='For Sales Review' %}
+		<button class="btn btn-primary font-md w-100" data-doc-name={{doc.name}} data-workflow-action="No Action" type="button">
+			{{ _('Under review. No action is required.') }}
+		</button>			
+		{% elif doc.workflow_state =='Waiting For Client Review' %}
+		<button class="btn btn-primary btn-place-quotation-for-review font-md w-40" data-doc-name={{doc.name}}  data-workflow-action="Accept" type="button">
+			{{ _('Accept') }}
+		</button>			
+		<button class="btn btn-primary btn-place-quotation-for-review font-md w-40" data-doc-name={{doc.name}} data-workflow-action="Reject" type="button">
+			{{ _('Reject') }}
+		</button>
+		<button  class="btn btn-primary btn-counter-offer-dialog font-md w-40" type="button">{{ _('Counter Offer') }}</button>
+		<button class="btn btn-primary btn-place-quotation-for-review font-md w-40" data-doc-name={{doc.name}} data-workflow-action="Counter Offer" type="button" hidden>
+			{{ _('Counter Offer') }}
+		</button>				
+		{% else %}
+			{% if cart_settings.enable_checkout %}
+				<button class="btn btn-primary btn-place-order font-md w-100" type="button">
+					{{ _("Place Order") }}
+				</button>
+			{% else %}
+				<button class="btn btn-primary btn-request-for-quotation font-md w-100" type="button">
+					{{ _("Request for Quote") }}
+				</button>
+			{% endif %}
+		{% endif %}		
+	</div>
+</div>
