@@ -17,10 +17,10 @@
 		<button class="btn btn-primary btn-place-quotation-for-review font-md w-40" data-doc-name={{doc.name}} data-workflow-action="Reject" type="button">
 			{{ _('Reject') }}
 		</button>
-		<button  class="btn btn-primary btn-counter-offer-dialog font-md w-40" type="button">{{ _('Counter Offer') }}</button>
+		<button  class="btn btn-primary btn-counter-offer-dialog font-md w-40" type="button" hidden>{{ _('Counter Offer') }}</button>
 		<button class="btn btn-primary btn-place-quotation-for-review font-md w-40" data-doc-name={{doc.name}} data-workflow-action="Counter Offer" type="button" hidden>
 			{{ _('Counter Offer') }}
-		</button>				
+		</button hidden>				
 		{% else %}
 			{% if cart_settings.enable_checkout %}
 				<button class="btn btn-primary btn-place-order font-md w-100" type="button">
