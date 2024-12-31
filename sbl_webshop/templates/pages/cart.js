@@ -319,8 +319,8 @@ $.extend(shopping_cart, {
 					setTimeout(() => {
 						// if (workflow_action=='Submit For Review' || workflow_action=='Counter Offer') {
 						if (workflow_action=='Submit For Review') {
-							// location.reload()
-							window.location.href = '/quotations';	
+							location.reload()
+							// window.location.href = '/quotations';	
 							}
 	
 							if (workflow_action=='Reject' ) {
